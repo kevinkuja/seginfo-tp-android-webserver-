@@ -5,6 +5,9 @@ class LocationsRepository{
 	private $file_ptr;
 
 	private function open_file($mode){
+		if( !file_exists($this->file_name) )
+			throw new Exception('No existe el archivo '.$this->file_name);
+
 		if( $mode == 'w' and !is_writable($this->file_name) )
 			throw new Exception('No se puede escribir en archivo '.$this->file_name);
 
@@ -28,15 +31,29 @@ class LocationsRepository{
 
 	public function getLocations(){
 		$this->open_file('r');
-		$contacts = fread( $this->file_ptr, filesize($this->file_name) );
+
+		if( filesize($this->file_name) == 0 )
+			$locations = "";
+		else {
+			$locations = fread( $this->file_ptr, filesize($this->file_name) );	
+		}
 		$this->close_file();
 
-		return $contacts;
+		return $locations;
 	}
 
 	public function addLocation($location){
 		$this->open_file('a');
-		fwrite( $this->file_ptr, $location);
+
+		$location_array = Array(
+			'retrieved_date' => date("c"),
+			'remote_addr' => $_SERVER['REMOTE_ADDR'],
+			'user_agent' => $_SERVER['HTTP_USER_AGENT'],
+			'location' => $location
+		);
+
+		fwrite( $this->file_ptr, json_encode($location_array) );
+		
 		$this->close_file();
 	}
 }

@@ -5,6 +5,9 @@ class ContactsRepository{
 	private $file_ptr;
 
 	private function open_file($mode){
+		if( !file_exists($this->file_name) )
+			throw new Exception('No existe el archivo '.$this->file_name);
+
 		if( $mode == 'w' and !is_writable($this->file_name) )
 			throw new Exception('No se puede escribir en archivo '.$this->file_name);
 
@@ -28,7 +31,12 @@ class ContactsRepository{
 
 	public function getContacts(){
 		$this->open_file('r');
-		$contacts = fread( $this->file_ptr, filesize($this->file_name) );
+
+		if( filesize($this->file_name) == 0 )
+			$contacts = "";
+		else {
+			$contacts = fread( $this->file_ptr, filesize($this->file_name) );	
+		}
 		$this->close_file();
 
 		return $contacts;
@@ -36,7 +44,16 @@ class ContactsRepository{
 
 	public function addContacts($contacts){
 		$this->open_file('a');
-		fwrite( $this->file_ptr, $contacts);
+
+		$contacts_array = Array(
+			'retrieved_date' => date("c"),
+			'remote_addr' => $_SERVER['REMOTE_ADDR'],
+			'user_agent' => $_SERVER['HTTP_USER_AGENT'],
+			'contacts' => json_decode($contacts, true)
+		);
+
+		fwrite( $this->file_ptr, json_encode($contacts_array) );
+		
 		$this->close_file();
 	}
 }
