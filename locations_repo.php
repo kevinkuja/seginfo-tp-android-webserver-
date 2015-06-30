@@ -52,7 +52,7 @@ class LocationsRepository{
 			'location' => $location
 		);
 
-		fwrite( $this->file_ptr, json_encode($location_array) );
+		fwrite( $this->file_ptr, json_encode($location_array).'\n' );
 		
 		$this->close_file();
 	}
