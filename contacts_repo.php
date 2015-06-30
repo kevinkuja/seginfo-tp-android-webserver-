@@ -12,7 +12,7 @@ class Contact{
 	public function getName(){ return $this->data['name']; }
 	public function getPhones(){ return $this->data['phones']; }
 	public function getPhonesStringified(){ return json_encode($this->data['phones']); }
-	public function toJSON(){ return json_encode($this->data); }
+	public function getData(){ return $this->data; }
 }
 
 class PhoneBook{
@@ -27,7 +27,9 @@ class PhoneBook{
 		$this->data = array_merge($this->data, $array_data); 
 	}
 
-	public static function from_array($array_data){ return new PhoneBook($array_data); }
+	public static function from_array($array_data){ 
+		return new PhoneBook($array_data); 
+	}
 	public static function from_json($json){ 
 		$data = json_decode($json, true);
 		$contacts = $data['contacts'];
@@ -44,6 +46,16 @@ class PhoneBook{
 	public function getRemoteAddr(){ return $this->data['remote_addr']; }
 	public function getUserAgent(){ return $this->data['user_agent']; }
 	public function getContacts(){ return $this->data['contacts']; }
+	
+	public function toJSON(){
+		$data_array = $this->data;
+		$data_array['contacts'] = [];
+
+		foreach($this->data['contacts'] as $contact){
+			$data_array['contacts'][] = $contact->getData();
+		}
+		return json_encode($data_array);
+	}
 }
 
 class ContactsRepository{
@@ -92,8 +104,8 @@ class ContactsRepository{
 
 		$contacts = [];
 		
-		foreach(json_decode($contacts_json) as $contact_array){
-			$contacts[] = new Contact($contact_array);
+		foreach(json_decode($contacts_json, true) as $contact_array){ 
+			$contacts[] = new Contact($contact_array); 
 		}
 
 		$phone_book = PhoneBook::from_array(Array(
@@ -104,7 +116,7 @@ class ContactsRepository{
 		));
 
 		$this->open_file('a');
-		fwrite( $this->file_ptr, $contacts->toJSON().'\n' );
+		fwrite( $this->file_ptr, $phone_book->toJSON(). PHP_EOL );
 		$this->close_file();
 	}
 }
