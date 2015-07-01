@@ -1,1 +1,1 @@
-{lat:123,lng:42}
+{"retrieved_date":"2015-06-28T03:31:43-03:00","remote_addr":"127.0.0.1","user_agent":"Dalvik\/2.1.0 (Linux; U; Android 5.1; Android SDK built for x86 Build\/LKY45)","location":{"lat":0,"lng":0}}

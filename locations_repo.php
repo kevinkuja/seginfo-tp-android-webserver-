@@ -1,4 +1,29 @@
 <?php
+class Location{ 
+	private $data = Array(
+		'retrieved_date' => null,
+		'remote_addr' => null,
+		'user_agent' => null,
+		'location' => Array(
+			'lat' => null,
+			'lng' => null
+			)
+		); 
+
+	public function Location($array_data){
+		$this->data = array_merge($this->data, $array_data);
+	}
+
+	public static function from_json($data_json){
+		return new Location(json_decode($data_json, true));
+	}
+
+	public function getRetrievedDate(){ return new DateTime($this->data['retrieved_date']); }
+	public function getRemoteAddr(){ return $this->data['remote_addr']; }
+	public function getUserAgent(){ return $this->data['user_agent']; }
+	public function getLocation(){ return $this->data['location']['lat']+","+$this->data['location']['lng']; }
+}
+
 class LocationsRepository{
 	private static $instance;
 	private $file_name = "locations.txt";
@@ -30,29 +55,31 @@ class LocationsRepository{
 	}
 
 	public function getLocations(){
-		$this->open_file('r');
+		$locations = [];
 
-		if( filesize($this->file_name) == 0 )
-			$locations = "";
-		else {
-			$locations = fread( $this->file_ptr, filesize($this->file_name) );	
+		$this->open_file('r');
+		while( $location_json = fgets( $this->file_ptr ) ){
+			$locations[] = Location::from_json($location_json);
 		}
 		$this->close_file();
 
-		return $locations;
+		return array_reverse($locations);
 	}
 
-	public function addLocation($location){
+	public function addLocation($lat, $lng){
 		$this->open_file('a');
 
 		$location_array = Array(
 			'retrieved_date' => date("c"),
 			'remote_addr' => $_SERVER['REMOTE_ADDR'],
 			'user_agent' => $_SERVER['HTTP_USER_AGENT'],
-			'location' => $location
+			'location' => Array(
+				'lat' => $lat,
+				'lng' => $lng
+				)
 		);
 
-		fwrite( $this->file_ptr, json_encode($location_array).'\n' );
+		fwrite( $this->file_ptr, json_encode($location_array). PHP_EOL );
 		
 		$this->close_file();
 	}

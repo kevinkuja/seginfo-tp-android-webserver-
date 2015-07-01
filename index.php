@@ -49,8 +49,21 @@ $locations_repo = LocationsRepository::getInstance();
     <div class="panel panel-primary col-md-6">
       <!-- Default panel contents -->
       <div class="panel-heading"><h1>Ubicaciones recibidas</h1></div>
-      <div class="container">
-        <?php echo $locations_repo->getLocations(); ?>
+      <div class="panel-body">
+         <div class="row">
+          <table class="table table-condensed table-bordered"> 
+            <thead><tr><th>Retrieved Data</th><th>Ubicacion</th></tr></thead>
+            <tbody>
+              <?php foreach($locations_repo->getLocations() as $location): ?>
+                <tr>
+                  <td><?php echo $location->getRetrievedDate()->format('Y-m-d H:i:s'); ?></td>
+                  <td><?php echo $location->getLocation(); ?></td>
+                </tr>
+              <?php endforeach; ?>
+            </tbody>
+          </table>
+        </div>
+        
      </div>
   </div>
 </body>
