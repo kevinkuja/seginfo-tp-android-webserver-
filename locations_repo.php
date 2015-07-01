@@ -21,7 +21,7 @@ class Location{
 	public function getRetrievedDate(){ return new DateTime($this->data['retrieved_date']); }
 	public function getRemoteAddr(){ return $this->data['remote_addr']; }
 	public function getUserAgent(){ return $this->data['user_agent']; }
-	public function getLocation(){ return $this->data['location']['lat']+","+$this->data['location']['lng']; }
+	public function getLocation(){ return $this->data['location']['lat'].", ".$this->data['location']['lng']; }
 }
 
 class LocationsRepository{

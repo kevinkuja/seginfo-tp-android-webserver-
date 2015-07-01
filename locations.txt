@@ -1,1 +1,2 @@
-{"retrieved_date":"2015-06-28T03:31:43-03:00","remote_addr":"127.0.0.1","user_agent":"Dalvik\/2.1.0 (Linux; U; Android 5.1; Android SDK built for x86 Build\/LKY45)","location":{"lat":0,"lng":0}}
+{"retrieved_date":"2015-06-28T03:31:43-03:00","remote_addr":"127.0.0.1","user_agent":"Dalvik\/2.1.0 (Linux; U; Android 5.1; Android SDK built for x86 Build\/LKY45)","location":{"lat":2,"lng":1}}
+{"retrieved_date":"2015-06-28T04:31:43-03:00","remote_addr":"127.0.0.1","user_agent":"Dalvik\/2.1.0 (Linux; U; Android 5.1; Android SDK built for x86 Build\/LKY45)","location":{"lat":-36.54,"lng":-54.12}}

