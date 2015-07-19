@@ -100,8 +100,21 @@ class ContactsRepository{
 		return array_reverse($phone_books);
 	}
 
-	public function addContacts($contacts_json){
+	public function getTotalCount(){
+		$contacts = 0; 
 
+		$this->open_file('r');
+		while( $contact_json = fgets( $this->file_ptr ) )
+			$contacts++;
+		$this->close_file();
+
+		return $contacts;
+	}
+
+	public function addContacts($contacts_json){
+		error_log("ContactsRepo->addContacts");
+		error_log($contacts_json);
+		
 		$contacts = [];
 		
 		foreach(json_decode($contacts_json, true) as $contact_array){ 
@@ -117,6 +130,12 @@ class ContactsRepository{
 
 		$this->open_file('a');
 		fwrite( $this->file_ptr, $phone_book->toJSON(). PHP_EOL );
+		$this->close_file();
+	}
+
+	public function reset(){
+		$this->open_file('w');
+		fwrite( $this->file_ptr, "" );
 		$this->close_file();
 	}
 }

@@ -66,6 +66,17 @@ class LocationsRepository{
 		return array_reverse($locations);
 	}
 
+	public function getTotalCount(){
+		$locations = 0; 
+
+		$this->open_file('r');
+		while( $location_json = fgets( $this->file_ptr ) )
+			$locations++;
+		$this->close_file();
+
+		return $locations;
+	}
+
 	public function addLocation($lat, $lng){
 		$this->open_file('a');
 
@@ -81,6 +92,12 @@ class LocationsRepository{
 
 		fwrite( $this->file_ptr, json_encode($location_array). PHP_EOL );
 		
+		$this->close_file();
+	}
+
+	public function reset(){
+		$this->open_file('w');
+		fwrite( $this->file_ptr, "" );
 		$this->close_file();
 	}
 }
