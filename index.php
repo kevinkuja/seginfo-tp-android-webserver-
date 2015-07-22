@@ -7,6 +7,7 @@ $locations_repo = LocationsRepository::getInstance();
 ?>
 <html>
   <head>
+    <meta http-equiv="refresh" content="20">
     <!-- Latest compiled and minified CSS -->
     <link rel="stylesheet" href="css/bootstrap.min.css">
 
@@ -27,10 +28,10 @@ $locations_repo = LocationsRepository::getInstance();
               </style>
   </head>
 <body>  
-  <div class="container" style="width:100%">
-    <div class="panel panel-primary col-md-5">
+  <div class="container" style="width:100%; height:95%">
+    <div id="contacts-panel" class="panel panel-primary col-md-5">
       <!-- Default panel contents -->
-      <div class="panel-heading"><h1>Contactos robados</h1></div>
+      <div class="panel-heading"><h1>Contactos robados (<?php echo $contacts_repo->getTotalCount(); ?>)</h1></div>
       <div class="panel-body" style="overflow: scroll; height: 80%;">
         <?php foreach($contacts_repo->getPhoneBooks() as $phone_book): ?>
         <div class="row" style="border-top:solid "> 
@@ -62,9 +63,9 @@ $locations_repo = LocationsRepository::getInstance();
         <?php endforeach; ?>
       </div>
     </div>  
-    <div class="panel panel-primary col-md-7">
+    <div id="locations-panel" class="panel panel-primary col-md-7">
       <!-- Default panel contents -->
-      <div class="panel-heading"><h1>Ubicaciones recibidas</h1></div>
+      <div class="panel-heading"><h1>Ubicaciones recibidas (<?php echo $locations_repo->getTotalCount(); ?>)</h1></div>
       <div class="panel-body" style="overflow: scroll; height: 80%;">
          <div class="row">
           <table class="table table-condensed table-bordered"> 
@@ -80,7 +81,6 @@ $locations_repo = LocationsRepository::getInstance();
             </tbody>
           </table>
         </div>
-        
      </div>
       <div>
           <div id="map-canvas"></div>
@@ -163,5 +163,8 @@ google.maps.event.addDomListener(window, 'load', initialize);
               </script> 
       </div>
   </div>
+ <div class="container">
+  <a class="btn btn-danger" href="./reset.php" role="button">RESET</a>
+ </div>
 </body>
 </html>
