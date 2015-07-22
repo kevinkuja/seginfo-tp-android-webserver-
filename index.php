@@ -1,4 +1,4 @@
-<?php
+<?php error_reporting(0);
 include 'contacts_repo.php';
 include 'locations_repo.php';
 
@@ -16,6 +16,15 @@ $locations_repo = LocationsRepository::getInstance();
     <!-- Latest compiled and minified JavaScript -->
     <script src="js/jquery-2.1.4.min.js"></script>
     <script src="js/bootstrap.min.js"></script>
+    <script src="https://maps.googleapis.com/maps/api/js?v=3.exp&sensor=false"></script>
+
+              <style>
+                  html, body, #map-canvas {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+              </style>
   </head>
 <body>  
   <div class="container" style="width:100%">
@@ -37,7 +46,14 @@ $locations_repo = LocationsRepository::getInstance();
               <tr>
                 <td><?php echo $contact->getID(); ?></td>
                 <td><?php echo $contact->getName(); ?></td>
-                <td><?php echo $contact->getPhonesStringified(); ?></td>
+                <td>
+                    <ul class="list-group">
+                    <?php 
+                foreach ($contact->getPhonesStringified() as $contact){?>
+                        <li class="list-group-item"><span class="glyphicon glyphicon-earphone"></span><?php echo $contact?></li>
+                <?php }
+                ?>
+                    </ul></td>
               </tr>
               <?php endforeach; ?>
             </tbody>
@@ -66,6 +82,86 @@ $locations_repo = LocationsRepository::getInstance();
         </div>
         
      </div>
+      <div>
+          <div id="map-canvas"></div>
+         <script type="text/javascript">
+              var map;
+
+// The JSON data
+var json = [
+ <?php 
+ $id = 0;
+ foreach($locations_repo->getLocations() as $location): 
+                echo '{"id":'.$id.',"title": "'.$location->getRemoteAddr().' / '.$location->getRetrievedDate()->format('Y-m-d H:i:s').'", "longitude":"'.split(",",$location->getLocation())[0].'", "latitude":"'.split(",",$location->getLocation())[1].'"},';
+ $id++;
+               endforeach; ?>
+                   ]
+                  
+//var json = [{"id":48,"title":"Helgelandskysten","longitude":"12.63376","latitude":"66.02219"},{"id":46,"title":"Tysfjord","longitude":"16.50279","latitude":"68.03515"},{"id":44,"title":"Sledehunds-ekspedisjon","longitude":"7.53744","latitude":"60.08929"},{"id":43,"title":"Amundsens sydpolferd","longitude":"11.38411","latitude":"62.57481"},{"id":39,"title":"Vikingtokt","longitude":"6.96781","latitude":"60.96335"},{"id":6,"title":"Tungtvann- sabotasjen","longitude":"8.49139","latitude":"59.87111"}];
+
+
+
+function initialize() {
+  
+  // Giving the map som options
+  var mapOptions = {
+    zoom: 4,
+    center: new google.maps.LatLng(-34.542451, -58.441518)
+  };
+  
+  // Creating the map
+  map = new google.maps.Map(document.getElementById('map-canvas'), mapOptions);
+  
+  
+  // Looping through all the entries from the JSON data
+  for(var i = 0; i < json.length; i++) {
+    
+    // Current object
+    var obj = json[i];
+
+    // Adding a new marker for the object
+    var marker = new google.maps.Marker({
+      position: new google.maps.LatLng(obj.latitude,obj.longitude),
+      map: map,
+      title: obj.title // this works, giving the marker a title with the correct title
+    });
+    
+    // Adding a new info window for the object
+    var clicker = addClicker(marker, obj.title);
+    
+ 
+
+
+
+  } // end loop
+  
+  
+  // Adding a new click event listener for the object
+  function addClicker(marker, content) {
+    google.maps.event.addListener(marker, 'click', function() {
+      
+      if (infowindow) {infowindow.close();}
+      infowindow = new google.maps.InfoWindow({content: content});
+      infowindow.open(map, marker);
+      
+    });
+  }
+
+
+  
+
+  
+  
+ 
+  
+  
+  
+}
+
+// Initialize the map
+google.maps.event.addDomListener(window, 'load', initialize);
+              </script> 
+      </div>
   </div>
 </body>
 </html>
